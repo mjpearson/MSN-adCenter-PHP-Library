@@ -3,13 +3,12 @@ class MSNAds extends MSNAdCenter {
     const NAME = 'Ads';
 
     // Ad Structure helper
-    // can be populated and passed back to createAd
     private $_objStruct = array(
         'Title' => NULL,
         'DestinationUrl' => NULL,
         'DisplayUrl' => NULL,
         'Text' => NULL
-    );
+    );    
 
     public function getObjStruct() {
         return $this->_objStruct;
@@ -37,11 +36,7 @@ class MSNAds extends MSNAdCenter {
     private function statusExec($service, $adGroupID, array $adIds) {
         $params = array();
         $params['AdGroupId'] = $adGroupID;
-        foreach ($adIds as $adid) {
-            // @todo exception here?
-            if ($service == 'UpdateAds' && empty($adid['Id'])) return FALSE;
-            $params['AdIds'][] = $adid;
-        }
+        $params['AdIds'] = $adIds;
         return $this->execute($service, $params);        
     }
 
@@ -61,11 +56,21 @@ class MSNAds extends MSNAdCenter {
         return $this->statusExec('GetAdsByIds', $adGroupID, $adIds);
     }
 
+    // -------------------------------------------------------------------------
+
     public function getByEditorialStatus($adGroupID, $editorialStatus) {
         $params = array();
         $params['AdGroupId'] = $adGroupID;
         $params['EditorialStatus'] = $editorialStatus;
         return $this->execute('GetAdsByEditorialStatus', $params);
+    }
+
+    // -- ADGROUPS
+
+    public function getByAdGroupId($adGroupId) {
+        $params = array();
+        $params['AdGroupId'] = $adGroupID;
+        return $this->execute('GetAdsByAdGroupId', $params);
     }
 }
 ?>

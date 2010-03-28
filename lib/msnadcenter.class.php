@@ -42,7 +42,11 @@
  *
  */
 abstract class MSNAdCenter {
-    
+
+    const RESPONSE_ARRAY = 1;
+
+    const RESPONSE_XML = 2;
+
     protected $_headers = array();
 
     protected $_opts = array(
@@ -67,25 +71,30 @@ abstract class MSNAdCenter {
      *
      * @param Boolean $debug - Whether or not debugging output is displayed
      * @param String $debug_style - Options are "cli" or "html". All it does is print "\n" or "<br>" for debugging output.
+     * @param SOAPClient $client optional overriding soapclient object
+     * @param array $headers optional overriding headers
      */
-    public function __construct($debug_enabled = FALSE, $debug_style = 'cli') {      
+    public function __construct($debug_enabled = FALSE, $debug_style = 'cli', $client = NULL, $headers = NULL) {
         $this->debug['enabled'] = $debug_enabled;
         $this->debug['style'] = $debug_style;
         $this->debug['last_response'] = 0;
 
         //Create the input headers
-        $this->_headers[] = new SoapHeader($this->_xmlns, 'ApplicationToken',API_KEY,false);
-        $this->_headers[] = new SoapHeader($this->_xmlns, 'DeveloperToken',API_KEY_DEV,false);
-        $this->_headers[] = new SoapHeader($this->_xmlns, 'UserName',API_USER,false);
-        $this->_headers[] = new SoapHeader($this->_xmlns, 'Password',API_PASSWORD,false);
-        $this->_headers[] = new SoapHeader($this->_xmlns, 'CustomerAccountId',API_CUSTOMER_ID,false);
+        if ($headers !== NULL) {
+            $this->_headers = $headers;
+        } else {
+            $this->_headers[] = new SoapHeader($this->_xmlns, 'ApplicationToken',API_KEY,false);
+            $this->_headers[] = new SoapHeader($this->_xmlns, 'DeveloperToken',API_KEY_DEV,false);
+            $this->_headers[] = new SoapHeader($this->_xmlns, 'UserName',API_USER,false);
+            $this->_headers[] = new SoapHeader($this->_xmlns, 'Password',API_PASSWORD,false);
+            $this->_headers[] = new SoapHeader($this->_xmlns, 'CustomerAccountId',API_CUSTOMER_ID,false);
+        }
 
-        $this->_client = new SOAPClient(MSDNAPI_SERVICE_URL.'?wsdl', $this->_opts);
-    }
-
-
-    public function getStruct() {
-        return constant(get_class($this)).'::STRUCT';
+        if ($client !== NULL) {
+            $this->_client = $client;
+        } else {
+            $this->_client = new SOAPClient(MSDNAPI_SERVICE_URL.'?wsdl', $this->_opts);
+        }
     }
 
     protected function getServiceName() {
@@ -94,18 +103,26 @@ abstract class MSNAdCenter {
 
     public function setResponse($response) {
         $this->_response = $response;
-
     }
 
-    const RESPONSE_ARRAY = 1;
+    public function getRequestHeaders() {
+        return $this->_headers;
+    }
 
-    const RESPONSE_XML = 2;
+    public function getClient() {
+        return $this->_client;
+    }
 
     public function getResponse($responseType = self::RESPONSE_XML) {
-        return $this->_response;
+        if ($responseType == self::RESPONSE_XML) {
+            return $this->_client->__getLastResponse();
+        } else {
+            return $this->_response;
+        }
     }
 
     protected function setResponseHeaders($responseHeaders) {
+        print_r($this->_response);
         $this->_responseHeaders = $responseHeaders;
     }
 
@@ -146,7 +163,7 @@ abstract class MSNAdCenter {
                     $this->_headers,
                     $output_headers);
 
-            $this->setResponse($result);
+            $this->setResponse($result);            
             $this->setResponseHeaders($output_headers);
             return TRUE;
         } catch (Exception $e) {
