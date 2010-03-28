@@ -30,9 +30,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * Example Implementation:
- *
- *
  * Shameless Plug:
  * Envoy Media Group is a marketing company that specializes in PPC, Email, TV,
  * Radio, etc. If you are a solid PHP coder and want to be a part of a fun, vibrant
@@ -59,7 +56,7 @@ if ($_liveEnv) {
     define('API_KEY', '');	// This should always be empty
     define('API_KEY_DEV', '');
     define('API_CUSTOMER_ID', '');
-    define('MSDNAPI_SERVICE_URL', 'https://sandboxapi.adcenter.microsoft.com/Api/Advertiser/v6/CampaignManagement/CampaignManagementService.svc');
+    define('MSDNAPI_SERVICE_URL', 'https://adcenterapi.microsoft.com/api/advertiser/v6/CampaignManagement/CampaignManagementService.svc');
 }
 
 ini_set("soap.wsdl_cache_enabled", "0");

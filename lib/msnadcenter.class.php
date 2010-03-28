@@ -30,18 +30,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * Example Implementation:
- *
- *
- * Shameless Plug:
- * Envoy Media Group is a marketing company that specializes in PPC, Email, TV,
- * Radio, etc. If you are a solid PHP coder and want to be a part of a fun, vibrant
- * team that tackle complex problems please send your info to mtaggart@envoymediagroup.com
- * We are always looking for talented developers and welcome the opportunity to discuss
- * the possibilities of you joining our team.
- *
  */
 abstract class MSNAdCenter {
+
+    const RESPONSE_OBJ = 0;
 
     const RESPONSE_ARRAY = 1;
 
@@ -49,22 +41,22 @@ abstract class MSNAdCenter {
 
     protected $_headers = array();
 
+    protected $_xmlns = "https://adcenter.microsoft.com/v6";
+
     protected $_opts = array(
-                                'trace' => TRUE,
-                                'location' => MSDNAPI_SERVICE_URL,
-                            );
+            'trace' => TRUE,
+            'location' => MSDNAPI_SERVICE_URL,
+    );
 
     protected $_client = NULL;
-
-    protected $_xmlns = "https://adcenter.microsoft.com/v6";
 
     protected $_response = NULL;
 
     protected $_responseHeaders = NULL;
 
-    var $auth;
-    var $api;
-    var $debug;
+    protected $_responseDefault = self::RESPONSE_ARRAY;
+
+    public $debug;
 
     /**
      * The MSN API contructor
@@ -97,6 +89,23 @@ abstract class MSNAdCenter {
         }
     }
 
+    public function setResponseDefault($responseType) {
+        switch($responseType) {
+            case self::RESPONSE_ARRAY :
+            case self::RESPONSE_OBJ :
+            case self::RESPONSE_XML :
+                $this->_responseDefault = $responseType;
+                break;
+            default:
+                throw new RuntimeException('Invalid response type selected');
+                break;
+        }
+    }
+
+    public function getResponseDefault() {
+        return $this->_responseDefault;
+    }
+
     protected function getServiceName() {
         return constant(get_class($this).'::NAME');
     }
@@ -113,16 +122,27 @@ abstract class MSNAdCenter {
         return $this->_client;
     }
 
+    public function obj2Arr($obj) {
+        if (!is_object($obj) && !is_array($obj)) {
+            return $obj;
+        } else if (is_object($obj)) {
+            $obj = get_object_vars($obj);
+        }
+
+        return array_map(array($this, 'obj2Arr'), $obj);
+    }
+
     public function getResponse($responseType = self::RESPONSE_XML) {
-        if ($responseType == self::RESPONSE_XML) {
-            return $this->_client->__getLastResponse();
-        } else {
+        if ($responseType == self::RESPONSE_OBJ) {
             return $this->_response;
+        } else if ($responseType == self::RESPONSE_XML) {
+            return $this->_client->__getLastResponse();
+        } else if ($responseType == self::RESPONSE_ARRAY) {
+            return $this->obj2Arr($this->_response);
         }
     }
 
     protected function setResponseHeaders($responseHeaders) {
-        print_r($this->_response);
         $this->_responseHeaders = $responseHeaders;
     }
 
@@ -150,7 +170,7 @@ abstract class MSNAdCenter {
         } else {
             $this->debug_print("PARAMS: '<pre>".print_r($params,true)."</pre>'");
         }
-        
+
         try {
             $output_headers = array();
 
@@ -163,13 +183,21 @@ abstract class MSNAdCenter {
                     $this->_headers,
                     $output_headers);
 
-            $this->setResponse($result);            
+            $this->setResponse($result);
             $this->setResponseHeaders($output_headers);
             return TRUE;
         } catch (Exception $e) {
             $this->process_errors($e);
         }
         return FALSE;
+    }
+
+
+    public function execRespond($service, $params) {
+        if ($this->execute($service, $params)) {
+            return $this->getResponse($this->_responseDefault);
+        }
+        return NULL;
     }
 
     /**
