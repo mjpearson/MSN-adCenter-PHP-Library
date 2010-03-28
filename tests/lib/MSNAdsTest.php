@@ -4,11 +4,11 @@
  *
  * @name      MSN adCenter PHP Library
  * @author    Michael Taggart <mtaggart@envoymediagroup.com>
- * @author    Michael Pearson <michael@cloudspark.com.au>
+ * @author    Michael Pearson <michael@phpgrease.net>
  * @copyright (c) 2010 Envoy Media Group
  * @link      http://www.envoymediagroup.com
  * @license   MIT
- * @version   $Rev: 5 $
+ * @version   $Rev$
  * @internal  $Id$
  *
  *
