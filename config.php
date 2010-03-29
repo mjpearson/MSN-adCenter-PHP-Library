@@ -56,7 +56,7 @@ if ($_liveEnv) {
     define('API_KEY', '');	// This should always be empty
     define('API_KEY_DEV', '');
     define('API_CUSTOMER_ID', '');
-    define('MSDNAPI_SERVICE_URL', 'https://adcenterapi.microsoft.com/api/advertiser/v6/CampaignManagement/CampaignManagementService.svc');
+    define('MSDNAPI_SERVICE_URL', 'https://sandboxapi.adcenter.microsoft.com/Api/Advertiser/v6/CampaignManagement/CampaignManagementService.svc');
     //soapui mock
     //define('MSDNAPI_SERVICE_URL', 'http://localhost:8088/mockBasicHttpBinding_ICampaignManagementService');
 }
