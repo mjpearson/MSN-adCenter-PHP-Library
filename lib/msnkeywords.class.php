@@ -29,13 +29,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- * 
+ *
  */
 class MSNKeywords extends MSNAdCenter {
 
     const NAME = 'Keywords';
 
-    public $_objStruct = array('BroadMatchBid' => NULL,
+    static public $_objStruct = array('BroadMatchBid' => NULL,
             'CashBackInfo' => NULL,
             'ContentMatchBid' => NULL,
             'EditorialStatus' => NULL,
@@ -55,8 +55,8 @@ class MSNKeywords extends MSNAdCenter {
      *
      * @return array 'Keyword' helper structure
      */
-    public function getObjStruct() {
-        return $this->_objStruct;
+    static public function getObjStruct() {
+        return self::$_objStruct;
     }
 
     /**
@@ -68,14 +68,14 @@ class MSNKeywords extends MSNAdCenter {
      * @param bool $boolResponse return operation status only
      * @return mixed default response type (Object, Array or Raw XML), or bool if $boolResponse == TRUE
      */
-    private function structExec($service, $adGroupId, array $keywords, $boolResponse = FALSE) {
+    static private function structExec($service, $adGroupId, array $keywords, $boolResponse = FALSE) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
         $params['Keywords'] = array('Keyword' => $keywords);
         if ($boolResponse) {
-            return $this->execute($service, $params);
+            return self::execute($service, $params);
         } else {
-            return $this->execRespond($service, $params);
+            return self::execRespond($service, $params);
         }
     }
 
@@ -85,8 +85,8 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $keywords array of string keywords
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function add($adGroupId, array $keywords) {
-        return $this->structExec('AddKeywords', $adGroupId, $keywords);
+    static public function add($adGroupId, array $keywords) {
+        return self::structExec('AddKeywords', $adGroupId, $keywords);
     }
 
     /**
@@ -95,8 +95,8 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $keywords array of string keywords
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function update($adGroupId, array $keywords) {
-        return $this->structExec('UpdateKeywords', $adGroupId, $keywords, TRUE);
+    static public function update($adGroupId, array $keywords) {
+        return self::structExec('UpdateKeywords', $adGroupId, $keywords, TRUE);
     }
 
     /**
@@ -107,14 +107,14 @@ class MSNKeywords extends MSNAdCenter {
      * @param <type> $boolResponse
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    private function statusExec($service, $adGroupId, array $keywordIds, $boolResponse = FALSE) {
+    static private function statusExec($service, $adGroupId, array $keywordIds, $boolResponse = FALSE) {
         $params = array();
         $params['CampaignId'] = $adGroupId;
         $params['KeywordIds'] = $keywordIds;
         if ($boolResponse) {
-            return $this->execute($service, $params);
+            return self::execute($service, $params);
         } else {
-            return $this->execRespond($service, $params);
+            return self::execRespond($service, $params);
         }
     }
 
@@ -124,8 +124,8 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $keywordIds
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function delete($adGroupId, array $keywordIds) {
-        return $this->statusExec('DeleteKeywords', $adGroupId, $keywordIds, TRUE);
+    static public function delete($adGroupId, array $keywordIds) {
+        return self::statusExec('DeleteKeywords', $adGroupId, $keywordIds, TRUE);
     }
 
     /**
@@ -134,8 +134,8 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $keywordIds
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function pause($adGroupId, array $keywordIds) {
-        return $this->statusExec('PauseKeywords', $adGroupId, $keywordIds, TRUE);
+    static public function pause($adGroupId, array $keywordIds) {
+        return self::statusExec('PauseKeywords', $adGroupId, $keywordIds, TRUE);
     }
 
     /**
@@ -144,8 +144,8 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $keywordIds
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function resume($adGroupId, array $keywordIds) {
-        return $this->statusExec('ResumeKeywords', $adGroupId, $keywordIds, TRUE);
+    static public function resume($adGroupId, array $keywordIds) {
+        return self::statusExec('ResumeKeywords', $adGroupId, $keywordIds, TRUE);
     }
 
     /**
@@ -154,8 +154,8 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $keywordIds
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByIds($adGroupId, array $keywordIds) {
-        return $this->statusExec('GetKeywordsByIds', $adGroupId, $keywordIds);
+    static public function getByIds($adGroupId, array $keywordIds) {
+        return self::statusExec('GetKeywordsByIds', $adGroupId, $keywordIds);
     }
 
     // -------------------------------------------------------------------------
@@ -167,10 +167,10 @@ class MSNKeywords extends MSNAdCenter {
      * @param int $adGroupId Ad Group ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByAdGroupId($adGroupId) {
+    static public function getByAdGroupId($adGroupId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
-        return $this->execRespond('GetKeywordsByAdGroupId', $params);
+        return self::execRespond('GetKeywordsByAdGroupId', $params);
     }
 
     /**
@@ -179,11 +179,11 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $adGroupIds array of int Ad Group IDs
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getNegativeByAdGroupId($campaignId, array $adGroupIds) {
+    static public function getNegativeByAdGroupId($campaignId, array $adGroupIds) {
         $params = array();
         $params['CampaignId'] = $campaignId;
         $params['AdGroupIds'] = $adGroupIds;
-        return $this->execRespond('GetNegativeKeywordsByAdGroupIds', $params);
+        return self::execRespond('GetNegativeKeywordsByAdGroupIds', $params);
     }
 
     /**
@@ -192,7 +192,7 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $agNegativeKeywords
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function setNegativeToAdGroups($campaignId, array $agNegativeKeywords) {
+    static public function setNegativeToAdGroups($campaignId, array $agNegativeKeywords) {
         $params = array();
         $params['CampaignId'] = $campaignId;
         $kwArr = array();
@@ -201,7 +201,7 @@ class MSNKeywords extends MSNAdCenter {
         }
         $params['AdGroupNegativeKeywords'] = $kwArr;
 
-        return $this->execute('SetNegativeKeywordsToAdGroups', $params);
+        return self::execute('SetNegativeKeywordsToAdGroups', $params);
     }
 
     // -- CAMPAIGNS
@@ -212,7 +212,7 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $cNegativeKeywords Associative Array of CampaignID => array(negative keywords)s
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function setNegativeToCampaigns($accountId, array $cNegativeKeywords) {
+    static public function setNegativeToCampaigns($accountId, array $cNegativeKeywords) {
         $params = array();
         $params['AccountId'] = $accountId;
         $cArr = array();
@@ -221,7 +221,7 @@ class MSNKeywords extends MSNAdCenter {
         }
         $params['CampaignNegativeKeywords'] = $kwArr;
 
-        return $this->execute('SetNegativeKeywordsToCampaigns', $params);
+        return self::execute('SetNegativeKeywordsToCampaigns', $params);
     }
 
     /**
@@ -230,11 +230,11 @@ class MSNKeywords extends MSNAdCenter {
      * @param array $campaignIds array of int Campaign IDs
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getNegativeByCampaignIds($accountId, array $campaignIds) {
+    static public function getNegativeByCampaignIds($accountId, array $campaignIds) {
         $params = array();
         $params['AccountId'] = $accountId;
         $params['CampaignIds'] = $campaignIds;
-        return $this->execRespond('GetNegativeKeywordsByCampaignIds', $params);
+        return self::execRespond('GetNegativeKeywordsByCampaignIds', $params);
     }
 }
 ?>

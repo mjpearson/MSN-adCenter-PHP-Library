@@ -43,65 +43,55 @@ require_once(dirname(__FILE__).'/../../config.php');
 
 class MSNAdsTest extends PHPUnit_Framework_TestCase {
 
-    private $_obj = NULL;
-
     public function setUp() {
-        $this->_obj = new MSNAds();
-        $this->_obj->setResponseDefault(MSNAdCenter::RESPONSE_ARRAY);
+        MSNAdCenter::setUp();
+        MSNAds::setResponseDefault(MSNAdCenter::RESPONSE_ARRAY);
     }
 
     public function tearDown() {
     }
 
     public function testAdd() {
-        $ad = $this->_obj;
 
         $newAd = array();
         $newAd['Title'] = 'ad title';
         $newAd['DisplayUrl'] = $newAd['DestinationUrl'] = 'http://www.foobalicious.com';
         $newAd['Text'] = 'ad text';
 
-        $response = $ad->add(123, array($newAd));
+        $response = MSNAds::add(123, array($newAd));
         $this->assertArrayHasKey('AdIds', $response);
     }
 
     public function testDelete() {
-        $ad = $this->_obj;
-        $this->assertTrue($ad->delete(123, array(10)));
+        $this->assertTrue(MSNAds::delete(123, array(10)));
     }
 
     public function testUpdate() {
-        $ad = $this->_obj;
-        $this->assertTrue($ad->update(123, array(10)));
+        $this->assertTrue(MSNAds::update(123, array(10)));
     }
 
     public function testPause() {
-        $ad = $this->_obj;
-        $this->assertTrue($ad->pause(123, array(10)));
+        $this->assertTrue(MSNAds::pause(123, array(10)));
     }
 
     public function testResume() {
-        $ad = $this->_obj;
-        $this->assertTrue($ad->resume(123, array(10)));
+        $this->assertTrue(MSNAds::resume(123, array(10)));
     }
 
     public function testGetByIds() {
-        $ad = $this->_obj;
-        $response = $ad->getByIds(123, array(10, 20, 30));
+        $response = MSNAds::getByIds(123, array(10, 20, 30));
         $this->assertArrayHasKey('Ads', $response);
     }
 
     // -------------------------------------------------------------------------
 
     public function testGetByEditorialStatus() {
-        $ad = $this->_obj;
-        $response = $ad->getByEditorialStatus(123, 'Active');
+        $response = MSNAds::getByEditorialStatus(123, 'Active');
         $this->assertArrayHasKey('Ads', $response);
     }
 
     public function testGetByAdGroupId() {
-        $ad = $this->_obj;
-        $response = $ad->getByAdGroupId(123);
+        $response = MSNAds::getByAdGroupId(123);
         $this->assertArrayHasKey('Ads', $response);
     }
 }

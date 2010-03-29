@@ -35,7 +35,7 @@ class MSNCampaigns extends MSNAdCenter {
 
     const NAME = 'Campaigns';
 
-    public $_objStruct = array('BroadMatchBid' => NULL,
+    static public $_objStruct = array('BroadMatchBid' => NULL,
             'CashBackInfo' => NULL,
             'ConversionTrackingEnabled' => NULL,
             'ConversionTrackingScript' => NULL,
@@ -55,8 +55,8 @@ class MSNCampaigns extends MSNAdCenter {
      *
      * @return array 'Campaign' helper structure
      */
-    public function getObjStruct() {
-        return $this->_objStruct;
+    static public function getObjStruct() {
+        return self::$_objStruct;
     }
 
     /**
@@ -68,14 +68,14 @@ class MSNCampaigns extends MSNAdCenter {
      * @param bool $boolResponse return operation status only
      * @return mixed default response type (Object, Array or Raw XML), or bool if $boolResponse == TRUE
      */
-    private function structExec($service, $accountId, array $campaigns, $boolResponse = FALSE) {
+    static private function structExec($service, $accountId, array $campaigns, $boolResponse = FALSE) {
         $params = array();
         $params['AccountId'] = $accountId;
         $params['Campaigns'] = array('Keyword' => $campaigns);
         if ($boolResponse) {
-            return $this->execute($service, $params);
+            return self::execute($service, $params);
         } else {
-            return $this->execRespond($service, $params);
+            return self::execRespond($service, $params);
         }
     }
 
@@ -85,8 +85,8 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $campaigns Array of 'Campaign' structures
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function add($accountId, array $campaigns) {
-        return $this->structExec('AddCampaigns', $accountId, $campaigns);
+    static public function add($accountId, array $campaigns) {
+        return self::structExec('AddCampaigns', $accountId, $campaigns);
     }
 
     /**
@@ -95,8 +95,8 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $campaigns Array of 'Campaign' structures
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function update($accountId, array $campaigns) {
-        return $this->structExec('UpdateCampaigns', $accountId, $campaigns, TRUE);
+    static public function update($accountId, array $campaigns) {
+        return self::structExec('UpdateCampaigns', $accountId, $campaigns, TRUE);
     }
 
     /**
@@ -107,14 +107,14 @@ class MSNCampaigns extends MSNAdCenter {
      * @param bool $boolResponse return operation status only
      * @return mixed default response type (Object, Array or Raw XML), or bool if $boolResponse == TRUE
      */
-    private function statusExec($service, $accountId, array $campaignIds, $boolResponse = FALSE) {
+    static private function statusExec($service, $accountId, array $campaignIds, $boolResponse = FALSE) {
         $params = array();
         $params['AccountId'] = $accountId;
         $params['CampaignIds'] = $campaignIds;
         if ($boolResponse) {
-            return $this->execute($service, $params);
+            return self::execute($service, $params);
         } else {
-            return $this->execRespond($service, $params);
+            return self::execRespond($service, $params);
         }
     }
 
@@ -124,8 +124,8 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $campaignIds array of int Campaign IDs
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function delete($accountId, array $campaignIds) {
-        return $this->statusExec('DeleteCampaigns', $accountId, $campaignIds, TRUE);
+    static public function delete($accountId, array $campaignIds) {
+        return self::statusExec('DeleteCampaigns', $accountId, $campaignIds, TRUE);
     }
 
     /**
@@ -134,8 +134,8 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $campaignIds array of int Campaign IDs
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function pause($accountId, array $campaignIds) {
-        return $this->statusExec('PauseCampaigns', $accountId, $campaignIds, TRUE);
+    static public function pause($accountId, array $campaignIds) {
+        return self::statusExec('PauseCampaigns', $accountId, $campaignIds, TRUE);
     }
 
     /**
@@ -144,8 +144,8 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $campaignIds array of int Campaign IDs
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function resume($accountId, array $campaignIds) {
-        return $this->statusExec('ResumeCampaigns', $accountId, $campaignIds, TRUE);
+    static public function resume($accountId, array $campaignIds) {
+        return self::statusExec('ResumeCampaigns', $accountId, $campaignIds, TRUE);
     }
 
     /**
@@ -154,8 +154,8 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $campaignIds array of int Campaign IDs
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByIds($accountId, array $campaignIds) {
-        return $this->statusExec('GetCampaignsByIds', $accountId, $campaignIds);
+    static public function getByIds($accountId, array $campaignIds) {
+        return self::statusExec('GetCampaignsByIds', $accountId, $campaignIds);
     }
 
     // -------------------------------------------------------------------------
@@ -165,10 +165,10 @@ class MSNCampaigns extends MSNAdCenter {
      * @param int $accountId Account ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByAccountId($accountId) {
+    static public function getByAccountId($accountId) {
         $params = array();
         $params['AccountId'] = $accountId;
-        return $this->execRespond('GetCampaignsByAccountID', $params);
+        return self::execRespond('GetCampaignsByAccountID', $params);
     }
 
     /**
@@ -176,10 +176,10 @@ class MSNCampaigns extends MSNAdCenter {
      * @param int $accountId Account ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getInfoByAccountId($accountId) {
+    static public function getInfoByAccountId($accountId) {
         $params = array();
         $params['AccountId'] = $accountId;
-        return $this->execRespond('GetCampaignsInfoByAccountID', $params);
+        return self::execRespond('GetCampaignsInfoByAccountID', $params);
     }
 
     // -- KEYWORDS
@@ -190,7 +190,7 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $cNegativeKeywords Associative Array of CampaignID => array(negative keywords)s
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function setNegativeKeywords($accountId, array $cNegativeKeywords) {
+    static public function setNegativeKeywords($accountId, array $cNegativeKeywords) {
         $params = array();
         $params['AccountId'] = $accountId;
         $cArr = array();
@@ -199,7 +199,7 @@ class MSNCampaigns extends MSNAdCenter {
         }
         $params['CampaignNegativeKeywords'] = $kwArr;
 
-        return $this->execute('SetNegativeKeywordsToCampaigns', $params);
+        return self::execute('SetNegativeKeywordsToCampaigns', $params);
     }
 
     /**
@@ -208,11 +208,11 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $campaignIds array of int Campaign IDs
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getNegativeKeywords($accountId, array $campaignIds) {
+    static public function getNegativeKeywords($accountId, array $campaignIds) {
         $params = array();
         $params['AccountId'] = $accountId;
         $params['CampaignIds'] = $campaignIds;
-        return $this->execRespond('GetNegativeKeywordsByCampaignIds', $params);
+        return self::execRespond('GetNegativeKeywordsByCampaignIds', $params);
     }
 
     // -- TARGETS
@@ -222,10 +222,10 @@ class MSNCampaigns extends MSNAdCenter {
      * @param array $campaignIds array of int Campaign IDs
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getTargets(array $campaignIds) {
+    static public function getTargets(array $campaignIds) {
         $params = array();
         $params['CampaignIds'] = $campaignIds;
-        return $this->execRespond('GetTargetsByCampaignIds', $params);
+        return self::execRespond('GetTargetsByCampaignIds', $params);
     }
 
     // -- ADGROUPS
@@ -235,10 +235,10 @@ class MSNCampaigns extends MSNAdCenter {
      * @param int $campaignId Campaign ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getAdGroups($campaignId) {
+    static public function getAdGroups($campaignId) {
         $params = array();
         $params['CampaignId'] = $campaignId;
-        return $this->execRespond('GetAdGroupsByCampaignId', $params);
+        return self::execRespond('GetAdGroupsByCampaignId', $params);
     }
 
     /**
@@ -246,10 +246,10 @@ class MSNCampaigns extends MSNAdCenter {
      * @param int $campaignId Campaign ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getAdGroupsInfo($campaignId) {
+    static public function getAdGroupsInfo($campaignId) {
         $params = array();
         $params['CampaignId'] = $campaignId;
-        return $this->execRespond('GetAdGroupsInfoByCampaignId', $params);
+        return self::execRespond('GetAdGroupsInfoByCampaignId', $params);
     }
 }
 ?>

@@ -31,7 +31,7 @@
  * THE SOFTWARE.
  *
  */
-abstract class MSNAdCenter {
+class MSNAdCenter {
 
     const RESPONSE_OBJ = 0;
 
@@ -39,24 +39,24 @@ abstract class MSNAdCenter {
 
     const RESPONSE_XML = 2;
 
-    protected $_headers = array();
+    static protected $_headers = array();
 
-    protected $_xmlns = "https://adcenter.microsoft.com/v6";
+    static protected $_xmlns = "https://adcenter.microsoft.com/v6";
 
-    protected $_opts = array(
+    static protected $_opts = array(
             'trace' => TRUE,
             'location' => MSDNAPI_SERVICE_URL,
     );
 
-    protected $_client = NULL;
+    static protected $_client = NULL;
 
-    protected $_response = NULL;
+    static protected $_response = NULL;
 
-    protected $_responseHeaders = NULL;
+    static protected $_responseHeaders = NULL;
 
-    protected $_responseDefault = self::RESPONSE_ARRAY;
+    static protected $_responseDefault = self::RESPONSE_ARRAY;
 
-    public $debug;
+    static public $debug;
 
     /**
      * The MSN API contructor
@@ -66,35 +66,35 @@ abstract class MSNAdCenter {
      * @param SOAPClient $client optional overriding soapclient object
      * @param array $headers optional overriding headers
      */
-    public function __construct($debug_enabled = FALSE, $debug_style = 'cli', $client = NULL, $headers = NULL) {
-        $this->debug['enabled'] = $debug_enabled;
-        $this->debug['style'] = $debug_style;
-        $this->debug['last_response'] = 0;
+    static public function setUp($debug_enabled = FALSE, $debug_style = 'cli', $client = NULL, $headers = NULL) {
+        self::$debug['enabled'] = $debug_enabled;
+        self::$debug['style'] = $debug_style;
+        self::$debug['last_response'] = 0;
 
         //Create the input headers
         if ($headers !== NULL) {
-            $this->_headers = $headers;
+            self::$_headers = $headers;
         } else {
-            $this->_headers[] = new SoapHeader($this->_xmlns, 'ApplicationToken',API_KEY,false);
-            $this->_headers[] = new SoapHeader($this->_xmlns, 'DeveloperToken',API_KEY_DEV,false);
-            $this->_headers[] = new SoapHeader($this->_xmlns, 'UserName',API_USER,false);
-            $this->_headers[] = new SoapHeader($this->_xmlns, 'Password',API_PASSWORD,false);
-            $this->_headers[] = new SoapHeader($this->_xmlns, 'CustomerAccountId',API_CUSTOMER_ID,false);
+            self::$_headers[] = new SoapHeader(self::$_xmlns, 'ApplicationToken',API_KEY,false);
+            self::$_headers[] = new SoapHeader(self::$_xmlns, 'DeveloperToken',API_KEY_DEV,false);
+            self::$_headers[] = new SoapHeader(self::$_xmlns, 'UserName',API_USER,false);
+            self::$_headers[] = new SoapHeader(self::$_xmlns, 'Password',API_PASSWORD,false);
+            self::$_headers[] = new SoapHeader(self::$_xmlns, 'CustomerAccountId',API_CUSTOMER_ID,false);
         }
 
         if ($client !== NULL) {
-            $this->_client = $client;
+            self::$_client = $client;
         } else {
-            $this->_client = new SOAPClient(MSDNAPI_SERVICE_URL.'?wsdl', $this->_opts);
+            self::$_client = new SOAPClient(MSDNAPI_SERVICE_URL.'?wsdl', self::$_opts);
         }
     }
 
-    public function setResponseDefault($responseType) {
+    static public function setResponseDefault($responseType) {
         switch($responseType) {
             case self::RESPONSE_ARRAY :
             case self::RESPONSE_OBJ :
             case self::RESPONSE_XML :
-                $this->_responseDefault = $responseType;
+                self::$_responseDefault = $responseType;
                 break;
             default:
                 throw new RuntimeException('Invalid response type selected');
@@ -102,52 +102,52 @@ abstract class MSNAdCenter {
         }
     }
 
-    public function getResponseDefault() {
-        return $this->_responseDefault;
+    static public function getResponseDefault() {
+        return self::$_responseDefault;
     }
 
-    protected function getServiceName() {
+    static protected function getServiceName() {
         return constant(get_class($this).'::NAME');
     }
 
-    public function setResponse($response) {
-        $this->_response = $response;
+    static public function setResponse($response) {
+        self::$_response = $response;
     }
 
-    public function getRequestHeaders() {
-        return $this->_headers;
+    static public function getRequestHeaders() {
+        return self::$_headers;
     }
 
-    public function getClient() {
-        return $this->_client;
+    static public function getClient() {
+        return self::$_client;
     }
 
-    public function obj2Arr($obj) {
+    static public function obj2Arr($obj) {
         if (!is_object($obj) && !is_array($obj)) {
             return $obj;
         } else if (is_object($obj)) {
             $obj = get_object_vars($obj);
         }
 
-        return array_map(array($this, 'obj2Arr'), $obj);
+        return array_map(array('MSNAdCenter', 'obj2Arr'), $obj);
     }
 
-    public function getResponse($responseType = self::RESPONSE_XML) {
+    static public function getResponse($responseType = self::RESPONSE_XML) {
         if ($responseType == self::RESPONSE_OBJ) {
-            return $this->_response;
+            return self::$_response;
         } else if ($responseType == self::RESPONSE_XML) {
-            return $this->_client->__getLastResponse();
+            return self::$_client->__getLastResponse();
         } else if ($responseType == self::RESPONSE_ARRAY) {
-            return $this->obj2Arr($this->_response);
+            return self::obj2Arr(self::$_response);
         }
     }
 
-    protected function setResponseHeaders($responseHeaders) {
-        $this->_responseHeaders = $responseHeaders;
+    static protected function setResponseHeaders($responseHeaders) {
+        self::$_responseHeaders = $responseHeaders;
     }
 
-    public function getResponseHeaders() {
-        return $this->_responseHeaders;
+    static public function getResponseHeaders() {
+        return self::$_responseHeaders;
     }
 
     /**
@@ -158,17 +158,15 @@ abstract class MSNAdCenter {
      * @param String $fetch_as - Either array or xml for the return object
      * @return Respose
      */
-    protected function execute($action, $params) {
-        $this->debug_print("------------------ execute ------------------");
-        $this->debug_print("SERVICE: '".$this->getServiceName()."'");
-        $this->debug_print("ACTION: '".$action."'");
+    static protected function execute($action, $params) {
+        self::debug_print("------------------ execute ------------------");
+        //self::debug_print("SERVICE: '".self::getServiceName()."'"); //
+        self::debug_print("ACTION: '".$action."'");
 
-        //print_r($params); exit;
-
-        if ($this->debug['style'] == 'cli') {
-            $this->debug_print("PARAMS: '".print_r($params,true)."'");
+        if (self::$debug['style'] == 'cli') {
+            self::debug_print("PARAMS: '".print_r($params,true)."'");
         } else {
-            $this->debug_print("PARAMS: '<pre>".print_r($params,true)."</pre>'");
+            self::debug_print("PARAMS: '<pre>".print_r($params,true)."</pre>'");
         }
 
         try {
@@ -176,26 +174,26 @@ abstract class MSNAdCenter {
 
             $request = array($action.'Request' => $params);
 
-            $result = $this->_client->__soapCall(
+            $result = self::$_client->__soapCall(
                     $action,
                     $request,
                     null,
-                    $this->_headers,
+                    self::$_headers,
                     $output_headers);
 
-            $this->setResponse($result);
-            $this->setResponseHeaders($output_headers);
+            self::setResponse($result);
+            self::setResponseHeaders($output_headers);
             return TRUE;
         } catch (Exception $e) {
-            $this->process_errors($e);
+            self::process_errors($e);
         }
         return FALSE;
     }
 
 
-    public function execRespond($service, $params) {
-        if ($this->execute($service, $params)) {
-            return $this->getResponse($this->_responseDefault);
+    static public function execRespond($service, $params) {
+        if (self::execute($service, $params)) {
+            return self::getResponse(self::$_responseDefault);
         }
         return NULL;
     }
@@ -207,11 +205,11 @@ abstract class MSNAdCenter {
      * @return None
      */
     private function process_errors($e) {
-        $this->debug_print("ERROR ON LAST EXECUTE!");
+        self::debug_print("ERROR ON LAST EXECUTE!");
 
         if (isset($e->detail->ApiFaultDetail)) {
-            $this->debug_print("ApiFaultDetail exception encountered");
-            $this->debug_print("Tracking ID: ".$e->detail->ApiFaultDetail->TrackingId);
+            self::debug_print("ApiFaultDetail exception encountered");
+            self::debug_print("Tracking ID: ".$e->detail->ApiFaultDetail->TrackingId);
 
             // Process any operation errors.
             if (isset($e->detail->ApiFaultDetail->OperationErrors->OperationError)) {
@@ -224,11 +222,11 @@ abstract class MSNAdCenter {
                     $obj = $e->detail->ApiFaultDetail->OperationErrors;
                 }
                 foreach ($obj as $operationError) {
-                    $this->debug_print("Operation error encountered:");
-                    $this->debug_print("Message: ".$operationError->Message);
-                    $this->debug_print("Details: ".$operationError->Details);
-                    $this->debug_print("ErrorCode: ".$operationError->ErrorCode);
-                    $this->debug_print("Code: ".$operationError->Code);
+                    self::debug_print("Operation error encountered:");
+                    self::debug_print("Message: ".$operationError->Message);
+                    self::debug_print("Details: ".$operationError->Details);
+                    self::debug_print("ErrorCode: ".$operationError->ErrorCode);
+                    self::debug_print("Code: ".$operationError->Code);
                 }
             }
 
@@ -243,18 +241,18 @@ abstract class MSNAdCenter {
                     $obj = $e->detail->ApiFaultDetail->BatchErrors;
                 }
                 foreach ($obj as $batchError) {
-                    $this->debug_print("Batch error encountered for array index ".$batchError->Index);
-                    $this->debug_print("Message: ".$batchError->Message);
-                    $this->debug_print("Details: ".$batchError->Details);
-                    $this->debug_print("ErrorCode: ".$batchError->ErrorCode);
-                    $this->debug_print("Code: ".$batchError->Code);
+                    self::debug_print("Batch error encountered for array index ".$batchError->Index);
+                    self::debug_print("Message: ".$batchError->Message);
+                    self::debug_print("Details: ".$batchError->Details);
+                    self::debug_print("ErrorCode: ".$batchError->ErrorCode);
+                    self::debug_print("Code: ".$batchError->Code);
                 }
             }
         }
 
         if (isset($e->detail->AdApiFaultDetail)) {
-            $this->debug_print("AdApiFaultDetail exception encountered");
-            $this->debug_print("Tracking ID: ".$e->detail->AdApiFaultDetail->TrackingId);
+            self::debug_print("AdApiFaultDetail exception encountered");
+            self::debug_print("Tracking ID: ".$e->detail->AdApiFaultDetail->TrackingId);
 
             // Process any operation errors.
             if (isset($e->detail->AdApiFaultDetail->Errors)) {
@@ -267,17 +265,17 @@ abstract class MSNAdCenter {
                     $obj = $e->detail->AdApiFaultDetail->Errors;
                 }
                 foreach ($obj as $Error) {
-                    $this->debug_print("Error encountered:");
-                    $this->debug_print("Message: ".$Error->Message);
-                    $this->debug_print("Detail: ".$Error->Detail);
-                    $this->debug_print("ErrorCode: ".$Error->ErrorCode);
-                    $this->debug_print("Code: ".$Error->Code);
+                    self::debug_print("Error encountered:");
+                    self::debug_print("Message: ".$Error->Message);
+                    self::debug_print("Detail: ".$Error->Detail);
+                    self::debug_print("ErrorCode: ".$Error->ErrorCode);
+                    self::debug_print("Code: ".$Error->Code);
                 }
             }
         }
 
         // Display the fault code and the fault string.
-        $this->debug_print($e->faultcode." ".$e->faultstring);
+        self::debug_print($e->faultcode." ".$e->faultstring);
     }
 
     /**
@@ -286,9 +284,9 @@ abstract class MSNAdCenter {
      * @param String $string - String to print
      */
     private function debug_print($string) {
-        if($this->debug['enabled']) {
+        if(self::$debug['enabled']) {
             $line_end = "\n";
-            if ($this->debug['style'] == 'html')
+            if (self::$debug['style'] == 'html')
                 $line_end = "<br>";
             print "MSN API Debug: $string{$line_end}";
         }

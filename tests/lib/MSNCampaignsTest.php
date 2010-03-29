@@ -43,13 +43,11 @@ require_once(dirname(__FILE__).'/../../config.php');
 
 class MSNCampaignsTest extends PHPUnit_Framework_TestCase {
 
-    private $_obj = NULL;
-
     private $_accountId = 987;
 
     public function setUp() {
-        $this->_obj = new MSNCampaigns();
-        $this->_obj->setResponseDefault(MSNAdCenter::RESPONSE_ARRAY);
+        MSNAdCenter::setUp();
+        MSNCampaigns::setResponseDefault(MSNAdCenter::RESPONSE_ARRAY);
     }
 
     public function tearDown() {
@@ -57,7 +55,6 @@ class MSNCampaignsTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testAdd() {
-        $campaign = $this->_obj;
 
         $newCampaign = array(
                 'BudgetType' => 'MonthlyBudgetSpendUntilDepleted',
@@ -70,80 +67,68 @@ class MSNCampaignsTest extends PHPUnit_Framework_TestCase {
                 'TimeZone' => 'PacificTimeUSCanadaTijuana',
         );
 
-        $response = $campaign->add(987, array($newCampaign));
+        $response = MSNCampaigns::add(987, array($newCampaign));
         $this->assertArrayHasKey('CampaignIds', $response);
     }
 
     public function testDelete() {
-        $campaign = $this->_obj;
-        $this->assertTrue($campaign->delete($this->_accountId, array(10)));
+        $this->assertTrue(MSNCampaigns::delete($this->_accountId, array(10)));
     }
 
     public function testUpdate() {
-        $campaign = $this->_obj;
-        $this->assertTrue($campaign->update($this->_accountId, array(10)));
+        $this->assertTrue(MSNCampaigns::update($this->_accountId, array(10)));
     }
 
     public function testPause() {
-        $campaign = $this->_obj;
-        $this->assertTrue($campaign->pause($this->_accountId, array(10)));
+        $this->assertTrue(MSNCampaigns::pause($this->_accountId, array(10)));
     }
 
     public function testResume() {
-        $campaign = $this->_obj;
-        $this->assertTrue($campaign->resume($this->_accountId, array(10)));
+        $this->assertTrue(MSNCampaigns::resume($this->_accountId, array(10)));
     }
 
     public function testGetByIds() {
-        $campaign = $this->_obj;
-        $response = $campaign->getByIds($this->_accountId, array(10, 20, 30));
+        $response = MSNCampaigns::getByIds($this->_accountId, array(10, 20, 30));
         $this->assertArrayHasKey('Campaigns', $response);
     }
 
     // -------------------------------------------------------------------------
 
     public function testGetByAccountId() {
-        $campaign = $this->_obj;
-        $response = $campaign->getByAccountId($this->_accountId);
+        $response = MSNCampaigns::getByAccountId($this->_accountId);
         $this->assertArrayHasKey('Campaigns', $response);
     }
 
     public function testGetInfoByAccountId() {
-        $campaign = $this->_obj;
-        $response = $campaign->getInfoByAccountId($this->_accountId);
+        $response = MSNCampaigns::getInfoByAccountId($this->_accountId);
         $this->assertArrayHasKey('CampaignsInfo', $response);
     }
 
     // -- KEYWORDS
 
     public function testSetNegativeKeywords() {
-        $campaign = $this->_obj;
-        $response = $campaign->setNegativeKeywords($this->_accountId,
+        $response = MSNCampaigns::setNegativeKeywords($this->_accountId,
                 array(10 => array('bad1', 'bad2')));
         $this->assertTrue($response);
     }
 
     public function testGetNegativeKeywords() {
-        $campaign = $this->_obj;
-        $response = $campaign->getNegativeKeywords($this->_accountId, array(10, 20, 30));
+        $response = MSNCampaigns::getNegativeKeywords($this->_accountId, array(10, 20, 30));
         $this->assertArrayHasKey('CampaignNegativeKeywords', $response);
     }
 
     public function testGetTargets() {
-        $campaign = $this->_obj;
-        $response = $campaign->getTargets(array(10, 20, 30));
+        $response = MSNCampaigns::getTargets(array(10, 20, 30));
         $this->assertArrayHasKey('Targets', $response);
     }
 
     public function testGetAdGroups() {
-        $campaign = $this->_obj;
-        $response = $campaign->getAdGroups(10);
+        $response = MSNCampaigns::getAdGroups(10);
         $this->assertArrayHasKey('AdGroups', $response);
     }
 
     public function testGetAdGroupsInfo() {
-        $campaign = $this->_obj;
-        $response = $campaign->getAdGroupsInfo(10);
+        $response = MSNCampaigns::getAdGroupsInfo(10);
         $this->assertArrayHasKey('AdGroupsInfo', $response);
     }
 }

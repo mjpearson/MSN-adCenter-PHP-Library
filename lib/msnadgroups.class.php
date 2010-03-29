@@ -35,7 +35,7 @@ class MSNAdGroups extends MSNAdCenter {
 
     const NAME = 'AdGroups';
 
-    private $_objStruct = array('AdDistribution' => NULL,
+    static private $_objStruct = array('AdDistribution' => NULL,
             'BiddingModel' => NULL,
             'BroadMatchBid' => NULL,
             'CashBackInfo' => NULL,
@@ -57,8 +57,8 @@ class MSNAdGroups extends MSNAdCenter {
      *
      * @return array 'AdGroup' helper structure
      */
-    public function getObjStruct() {
-        return $this->_objStruct;
+    static public function getObjStruct() {
+        return self::$_objStruct;
     }
 
     /**
@@ -70,14 +70,14 @@ class MSNAdGroups extends MSNAdCenter {
      * @param bool $boolResponse return operation status only
      * @return mixed default response type (Object, Array or Raw XML), or bool if $boolResponse == TRUE
      */
-    private function structExec($service, $campaignId, array $adGroups, $boolResponse = FALSE) {
+    static private function structExec($service, $campaignId, array $adGroups, $boolResponse = FALSE) {
         $params = array();
         $params['CampaignId'] = $campaignId;
         $params['AdGroups'] = array('AdGroup' => $adGroups);
         if ($boolResponse) {
-            return $this->execute($service, $params);
+            return self::execute($service, $params);
         } else {
-            return $this->execRespond($service, $params);
+            return self::execRespond($service, $params);
         }
     }
 
@@ -87,8 +87,8 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $adGroups Array of 'AdGroup' structures
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function add($campaignId, array $adGroups) {
-        return $this->structExec('AddAdGroups', $campaignId, $adGroups);
+    static public function add($campaignId, array $adGroups) {
+        return self::structExec('AddAdGroups', $campaignId, $adGroups);
     }
 
     /**
@@ -97,8 +97,8 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $adGroups Array of 'AdGroup' structures
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function update($campaignId, array $adGroups) {
-        return $this->structExec('UpdateAdGroups', $campaignId, $adGroups, TRUE);
+    static public function update($campaignId, array $adGroups) {
+        return self::structExec('UpdateAdGroups', $campaignId, $adGroups, TRUE);
     }
 
     /**
@@ -109,14 +109,14 @@ class MSNAdGroups extends MSNAdCenter {
      * @param bool $boolResponse return operation status only
      * @return mixed default response type (Object, Array or Raw XML), or bool if $boolResponse == TRUE
      */
-    private function statusExec($service, $campaignId, array $adGroupIds, $boolResponse = FALSE) {
+    static private function statusExec($service, $campaignId, array $adGroupIds, $boolResponse = FALSE) {
         $params = array();
         $params['CampaignId'] = $campaignId;
         $params['AdGroupIds'] = $adGroupIds;
         if ($boolResponse) {
-            return $this->execute($service, $params);
+            return self::execute($service, $params);
         } else {
-            return $this->execRespond($service, $params);
+            return self::execRespond($service, $params);
         }
     }
 
@@ -126,8 +126,8 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $adGroupIds array of integer AdGroup id's
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function delete($campaignId, array $adGroupIds) {
-        return $this->statusExec('DeleteAdGroups', $campaignId, $adGroupIds, TRUE);
+    static public function delete($campaignId, array $adGroupIds) {
+        return self::statusExec('DeleteAdGroups', $campaignId, $adGroupIds, TRUE);
     }
 
     /**
@@ -136,8 +136,8 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $adGroupIds array of integer AdGroup id's
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function pause($campaignId, array $adGroupIds) {
-        return $this->statusExec('PauseAdGroups', $campaignId, $adGroupIds, TRUE);
+    static public function pause($campaignId, array $adGroupIds) {
+        return self::statusExec('PauseAdGroups', $campaignId, $adGroupIds, TRUE);
     }
 
     /**
@@ -146,8 +146,8 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $adGroupIds array of integer AdGroup id's
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function resume($campaignId, array $adGroupIds) {
-        return $this->statusExec('ResumeAdGroups', $campaignId, $adGroupIds, TRUE);
+    static public function resume($campaignId, array $adGroupIds) {
+        return self::statusExec('ResumeAdGroups', $campaignId, $adGroupIds, TRUE);
     }
 
     /**
@@ -156,8 +156,8 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $adGroupIds array of integer AdGroup id's
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByIds($campaignId, array $adGroupIds) {
-        return $this->statusExec('GetAdGroupsByIds', $campaignId, $adGroupIds);
+    static public function getByIds($campaignId, array $adGroupIds) {
+        return self::statusExec('GetAdGroupsByIds', $campaignId, $adGroupIds);
     }
 
     // -------------------------------------------------------------------------
@@ -167,10 +167,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $adGroupId Ad Group ID
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function submitForApproval($adGroupId) {
+    static public function submitForApproval($adGroupId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
-        return $this->execute('SubmitAdGroupForApproval', $params);
+        return self::execute('SubmitAdGroupForApproval', $params);
     }
 
     // -- CAMPAIGN
@@ -180,10 +180,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $campaignId campaign id
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByCampaignId($campaignId) {
+    static public function getByCampaignId($campaignId) {
         $params = array();
         $params['CampaignId'] = $campaignId;
-        return $this->execRespond('GetAdGroupsByCampaignId', $params);
+        return self::execRespond('GetAdGroupsByCampaignId', $params);
     }
 
     /**
@@ -191,10 +191,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $campaignId campaign id
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getInfoByCampaignId($campaignId) {
+    static public function getInfoByCampaignId($campaignId) {
         $params = array();
         $params['CampaignId'] = $campaignId;
-        return $this->execRespond('GetAdGroupsInfoByCampaignId', $params);
+        return self::execRespond('GetAdGroupsInfoByCampaignId', $params);
     }
 
     // -- ADS
@@ -204,10 +204,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $adGroupId Ad Group ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getAds($adGroupId) {
+    static public function getAds($adGroupId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
-        return $this->execRespond('GetAdsByAdGroupId', $params);
+        return self::execRespond('GetAdsByAdGroupId', $params);
     }
 
     // -- SITEPLACEMENTS
@@ -217,10 +217,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $adGroupId Ad Group ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getSitePlacements($adGroupId) {
+    static public function getSitePlacements($adGroupId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
-        return $this->execRespond('GetSitePlacementsByAdGroupId', $params);
+        return self::execRespond('GetSitePlacementsByAdGroupId', $params);
     }
 
     // -- TARGETS
@@ -231,11 +231,11 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $targetId Target ID
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function setTargetTo($adGroupId, $targetId) {
+    static public function setTargetTo($adGroupId, $targetId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
         $params['TargetId'] = $targetId;
-        return $this->execute('SetTargetToAdGroup', $params);
+        return self::execute('SetTargetToAdGroup', $params);
     }
 
     /**
@@ -243,10 +243,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $adGroupIds array of integer AdGroup id's
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getTargets(array $adGroupIds) {
+    static public function getTargets(array $adGroupIds) {
         $params = array();
         $params['AdGroupIds'] = $adGroupIds;
-        return $this->execRespond('GetTargetsByAdGroupIds', $params);
+        return self::execRespond('GetTargetsByAdGroupIds', $params);
     }
 
     /**
@@ -254,10 +254,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $adGroupId Ad Group ID
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function deleteTarget($adGroupId) {
+    static public function deleteTarget($adGroupId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
-        return $this->execute('DeleteTargetFromAdGroup', $params);
+        return self::execute('DeleteTargetFromAdGroup', $params);
     }
 
     // -- KEYWORDS
@@ -267,10 +267,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $adGroupId Ad Group ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getKeywords($adGroupId) {
+    static public function getKeywords($adGroupId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
-        return $this->execRespond('GetKeywordsByAdGroupId', $params);
+        return self::execRespond('GetKeywordsByAdGroupId', $params);
     }
 
     /**
@@ -279,11 +279,11 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $adGroupIds array of integer AdGroup id's
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getNegativeKeywords($campaignId, array $adGroupIds) {
+    static public function getNegativeKeywords($campaignId, array $adGroupIds) {
         $params = array();
         $params['CampaignId'] = $campaignId;
         $params['AdGroupIds'] = $adGroupIds;
-        return $this->execRespond('GetNegativeKeywordsByAdGroupIds', $params);
+        return self::execRespond('GetNegativeKeywordsByAdGroupIds', $params);
     }
 
     /**
@@ -292,7 +292,7 @@ class MSNAdGroups extends MSNAdCenter {
      * @param array $agNegativeKeywords
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function setNegativeKeywords($campaignId, array $agNegativeKeywords) {
+    static public function setNegativeKeywords($campaignId, array $agNegativeKeywords) {
         $params = array();
         $params['CampaignId'] = $campaignId;
         $kwArr = array();
@@ -301,7 +301,7 @@ class MSNAdGroups extends MSNAdCenter {
         }
         $params['AdGroupNegativeKeywords'] = $kwArr;
 
-        return $this->execute('SetNegativeKeywordsToAdGroups', $params);
+        return self::execute('SetNegativeKeywordsToAdGroups', $params);
     }
 
     // -- BEHAVIOURAL BIDS
@@ -311,10 +311,10 @@ class MSNAdGroups extends MSNAdCenter {
      * @param int $adGroupId Ad Group ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getBehavioralBids($adGroupId) {
+    static public function getBehavioralBids($adGroupId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
-        return $this->execRespond('GetBehavioralBidsByAdGroupId', $params);
+        return self::execRespond('GetBehavioralBidsByAdGroupId', $params);
     }
 }
 ?>

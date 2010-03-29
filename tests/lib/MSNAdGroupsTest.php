@@ -43,22 +43,19 @@ require_once(dirname(__FILE__).'/../../config.php');
 
 class MSNAdGroupsTest extends PHPUnit_Framework_TestCase {
 
-    private $_obj = NULL;
-
     private $_campaignId = 10;
 
     public function setUp() {
-        $this->_obj = new MSNAdGroups();
-        $this->_obj->setResponseDefault(MSNAdCenter::RESPONSE_ARRAY);
+        MSNAdCenter::setUp();
+        MSNAdGroups::setResponseDefault(MSNAdCenter::RESPONSE_ARRAY);
     }
 
     public function tearDown() {
     }
 
     public function testAdd() {
-        $adGroup = $this->_obj;
 
-        $newAg = $adGroup->getObjStruct();
+        $newAg = array();
         $newAg['Name'] = 'HeadWear';
         $newAg['AdDistribution'] = 'Search';
         $newAg['BiddingModel'] = 'Keyword';
@@ -74,119 +71,102 @@ class MSNAdGroupsTest extends PHPUnit_Framework_TestCase {
         $newAg['LanguageAndRegion'] = 'EnglishUnitedStates';
         $newAg['NegativeKeywords'] = NULL;
 
-        $response = $adGroup->add($this->_campaignId, array($newAg));
+        $response = MSNAdGroups::add($this->_campaignId, array($newAg));
         $this->assertArrayHasKey('AdGroupIds', $response);
     }
 
     public function testDelete() {
-        $adGroup = $this->_obj;
-        $this->assertTrue($adGroup->delete($this->_campaignId, array(10)));
+        $this->assertTrue(MSNAdGroups::delete($this->_campaignId, array(10)));
     }
 
     public function testUpdate() {
-        $adGroup = $this->_obj;
-        $this->assertTrue($adGroup->update($this->_campaignId, array(10)));
+        $this->assertTrue(MSNAdGroups::update($this->_campaignId, array(10)));
     }
 
     public function testPause() {
-        $adGroup = $this->_obj;
-        $this->assertTrue($adGroup->pause($this->_campaignId, array(10)));
+        $this->assertTrue(MSNAdGroups::pause($this->_campaignId, array(10)));
     }
 
     public function testResume() {
-        $adGroup = $this->_obj;
-        $this->assertTrue($adGroup->resume($this->_campaignId, array(10)));
+        $this->assertTrue(MSNAdGroups::resume($this->_campaignId, array(10)));
     }
 
     public function testGetByIds() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getByIds($this->_campaignId, array(10, 20, 30));
+        $response = MSNAdGroups::getByIds($this->_campaignId, array(10, 20, 30));
         $this->assertArrayHasKey('AdGroups', $response);
     }
 
     // -------------------------------------------------------------------------
 
     public function testSubmitForApproval() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->submitForApproval(10);
+        $response = MSNAdGroups::submitForApproval(10);
         $this->assertTrue($response);
     }
 
     // -- CAMPAIGN
 
     public function testGetByCampaignId() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getByCampaignId($this->_campaignId);
+        $response = MSNAdGroups::getByCampaignId($this->_campaignId);
         $this->assertArrayHasKey('AdGroups', $response);
     }
 
     public function testGetInfoByCampaignId() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getInfoByCampaignId($this->_campaignId);
+        $response = MSNAdGroups::getInfoByCampaignId($this->_campaignId);
         $this->assertArrayHasKey('AdGroupsInfo', $response);
     }
 
     // -- ADS
 
     public function testGetAds() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getAds(10);
+        $response = MSNAdGroups::getAds(10);
         $this->assertArrayHasKey('Ads', $response);
     }
 
     // -- SITEPLACEMENTS
 
     public function testGetSitePlacements() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getSitePlacements(10);
+        $response = MSNAdGroups::getSitePlacements(10);
         $this->assertArrayHasKey('SitePlacements', $response);
     }
 
     // -- TARGETS
 
     public function testSetTargetTo() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->setTargetTo(10, 987564321);
+        $response = MSNAdGroups::setTargetTo(10, 987564321);
         $this->assertTrue($response);
     }
 
     public function testGetTargets() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getTargets(array(10, 20, 30));
+        $response = MSNAdGroups::getTargets(array(10, 20, 30));
         $this->assertArrayHasKey('Targets', $response);
     }
 
     public function testDeleteTarget() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->deleteTarget(10);
+        $response = MSNAdGroups::deleteTarget(10);
         $this->assertTrue($response);
     }
 
     // -- KEYWORDS
 
     public function testGetKeywords() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getKeywords(10);
+        $response = MSNAdGroups::getKeywords(10);
         $this->assertArrayHasKey('Keywords', $response);
     }
 
     public function testGetNegativeKeywords() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getNegativeKeywords($this->_campaignId, array(10));
+        $response = MSNAdGroups::getNegativeKeywords($this->_campaignId, array(10));
         $this->assertArrayHasKey('AdGroupNegativeKeywords', $response);
     }
 
     public function testSetNegativeKeywords() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->setNegativeKeywords($this->_campaignId, array(10 => array('bad1', 'bad2', 'bad3')));
+        $response = MSNAdGroups::setNegativeKeywords($this->_campaignId, array(10 => array('bad1', 'bad2', 'bad3')));
         $this->assertTrue($response);
     }
 
     // -- BEHAVIOURAL BIDS
 
     public function testGetBehavioralBids() {
-        $adGroup = $this->_obj;
-        $response = $adGroup->getBehavioralBids(10);
+        $response = MSNAdGroups::getBehavioralBids(10);
         var_dump($response);
         $this->assertArrayHasKey('BehavioralBids', $response);
     }

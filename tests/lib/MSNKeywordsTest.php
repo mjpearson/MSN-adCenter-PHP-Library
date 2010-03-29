@@ -46,15 +46,15 @@ class MSNKeywordsTest extends PHPUnit_Framework_TestCase {
     private $_obj = NULL;
 
     public function setUp() {
-        $this->_obj = new MSNKeywords();
-        $this->_obj->setResponseDefault(MSNAdCenter::RESPONSE_ARRAY);
+        MSNAdCenter::setUp();
+        MSNKeywords::setResponseDefault(MSNAdCenter::RESPONSE_ARRAY);
     }
 
     public function tearDown() {
     }
 
     public function testKeywordd() {
-        $kw = $this->_obj;
+
 
         $newKeyword = array(
                 'Text' => 'mittens',
@@ -64,33 +64,33 @@ class MSNKeywordsTest extends PHPUnit_Framework_TestCase {
                 'NegativeKeywords' => NULL
         );
 
-        $response = $kw->add(567, array($newKeyword));
+        $response = MSNKeywords::add(567, array($newKeyword));
         $this->assertArrayHasKey('KeywordIds', $response);
     }
 
     public function testDelete() {
-        $kw = $this->_obj;
-        $this->assertTrue($kw->delete(567, array(10)));
+
+        $this->assertTrue(MSNKeywords::delete(567, array(10)));
     }
 
     public function testUpdate() {
-        $kw = $this->_obj;
-        $this->assertTrue($kw->update(567, array(10)));
+
+        $this->assertTrue(MSNKeywords::update(567, array(10)));
     }
 
     public function testPause() {
-        $kw = $this->_obj;
-        $this->assertTrue($kw->pause(567, array(10)));
+
+        $this->assertTrue(MSNKeywords::pause(567, array(10)));
     }
 
     public function testResume() {
-        $kw = $this->_obj;
-        $this->assertTrue($kw->resume(567, array(10)));
+
+        $this->assertTrue(MSNKeywords::resume(567, array(10)));
     }
 
     public function testGetByIds() {
-        $kw = $this->_obj;
-        $response = $kw->getByIds(567, array(10, 20, 30));
+
+        $response = MSNKeywords::getByIds(567, array(10, 20, 30));
         $this->assertArrayHasKey('Keywords', $response);
     }
 
@@ -99,34 +99,34 @@ class MSNKeywordsTest extends PHPUnit_Framework_TestCase {
     // -- ADGROUPS
 
     public function testGetByAdGroupID() {
-        $kw = $this->_obj;
-        $response = $kw->getByAdGroupId(123);
+
+        $response = MSNKeywords::getByAdGroupId(123);
         $this->assertArrayHasKey('Keywords', $response);
     }
 
     public function testGetNegativeByAdGroupId() {
-        $kw = $this->_obj;
-        $response = $kw->getNegativeByAdGroupId(56789, array(10, 20, 30));
+
+        $response = MSNKeywords::getNegativeByAdGroupId(56789, array(10, 20, 30));
         $this->assertArrayHasKey('AdGroupNegativeKeywords', $response);
     }
 
     public function testSetNegativeToAdGroups() {
-        $kw = $this->_obj;
-        $response = $kw->setNegativeToAdGroups(56789, array(10 => array('bad1', 'bad2')));
+
+        $response = MSNKeywords::setNegativeToAdGroups(56789, array(10 => array('bad1', 'bad2')));
         $this->assertTrue($response);
     }
 
     // -- CAMPAIGNS
 
     public function testSetNegativeToCampaigns() {
-        $kw = $this->_obj;
-        $response = $kw->setNegativeToCampaigns(987546, array(6667 => array('bad1', 'bad2')));
+
+        $response = MSNKeywords::setNegativeToCampaigns(987546, array(6667 => array('bad1', 'bad2')));
         $this->assertTrue($response);
     }
 
     public function testGetNegativeByCampaignIds() {
-        $kw = $this->_obj;
-        $response = $kw->getNegativeByCampaignIds(987546, array(1, 2, 3, 4));
+
+        $response = MSNKeywords::getNegativeByCampaignIds(987546, array(1, 2, 3, 4));
         $this->assertArrayHasKey('CampaignNegativeKeywords', $response);
     }
 }

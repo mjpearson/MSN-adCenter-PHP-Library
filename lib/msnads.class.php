@@ -35,7 +35,7 @@ class MSNAds extends MSNAdCenter {
     const NAME = 'Ads';
 
     // Ad Structure helper
-    private $_objStruct = array(
+    static private $_objStruct = array(
             'Title' => NULL,
             'DestinationUrl' => NULL,
             'DisplayUrl' => NULL,
@@ -46,8 +46,8 @@ class MSNAds extends MSNAdCenter {
      *
      * @return array 'Ad' helper structure
      */
-    public function getObjStruct() {
-        return $this->_objStruct;
+    static public function getObjStruct() {
+        return self::$_objStruct;
     }
 
     /**
@@ -59,19 +59,19 @@ class MSNAds extends MSNAdCenter {
      * @param bool $boolResponse return operation status only
      * @return mixed default response type (Object, Array or Raw XML), or bool if $boolResponse == TRUE
      */
-    private function structExec($service, $adGroupId, array $ads, $boolResponse = FALSE) {
+    static private function structExec($service, $adGroupId, array $ads, $boolResponse = FALSE) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
         $adSVar = array();
         foreach ($ads as $adStruct) {
 
-            $adSVar[] = new SoapVar($adStruct, SOAP_ENC_OBJECT, 'TextAd', $this->_xmlns);
+            $adSVar[] = new SoapVar($adStruct, SOAP_ENC_OBJECT, 'TextAd', self::$_xmlns);
         }
         $params['Ads'] = array('Ad' => $adSVar);
         if ($boolResponse) {
-            return $this->execute($service, $params);
+            return self::execute($service, $params);
         } else {
-            return $this->execRespond($service, $params);
+            return self::execRespond($service, $params);
         }
     }
 
@@ -81,8 +81,8 @@ class MSNAds extends MSNAdCenter {
      * @param array $ads Array of 'Ad' structures
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function add($adGroupId, array $ads) {
-        return $this->structExec('AddAds', $adGroupId, $ads);
+    static public function add($adGroupId, array $ads) {
+        return self::structExec('AddAds', $adGroupId, $ads);
     }
 
     /**
@@ -91,8 +91,8 @@ class MSNAds extends MSNAdCenter {
      * @param array $ads Array of 'Ad' structures
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function update($adGroupId, array $ads) {
-        return $this->structExec('UpdateAds', $adGroupId, $ads, TRUE);
+    static public function update($adGroupId, array $ads) {
+        return self::structExec('UpdateAds', $adGroupId, $ads, TRUE);
     }
 
     /**
@@ -103,14 +103,14 @@ class MSNAds extends MSNAdCenter {
      * @param bool $boolResponse return operation status only
      * @return mixed default response type (Object, Array or Raw XML), or bool if $boolResponse == TRUE
      */
-    private function statusExec($service, $adGroupId, array $adIds, $boolResponse = FALSE) {
+    static private function statusExec($service, $adGroupId, array $adIds, $boolResponse = FALSE) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
         $params['AdIds'] = $adIds;
         if ($boolResponse) {
-            return $this->execute($service, $params);
+            return self::execute($service, $params);
         } else {
-            return $this->execRespond($service, $params);
+            return self::execRespond($service, $params);
         }
     }
 
@@ -120,8 +120,8 @@ class MSNAds extends MSNAdCenter {
      * @param array $adIds Ad IDs
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function delete($adGroupId, array $adIds) {
-        return $this->statusExec('DeleteAds', $adGroupId, $adIds, TRUE);
+    static public function delete($adGroupId, array $adIds) {
+        return self::statusExec('DeleteAds', $adGroupId, $adIds, TRUE);
     }
 
     /**
@@ -130,8 +130,8 @@ class MSNAds extends MSNAdCenter {
      * @param array $adIds Ad IDs
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function pause($adGroupId, array $adIds) {
-        return $this->statusExec('PauseAds', $adGroupId, $adIds, TRUE);
+    static public function pause($adGroupId, array $adIds) {
+        return self::statusExec('PauseAds', $adGroupId, $adIds, TRUE);
     }
 
     /**
@@ -140,8 +140,8 @@ class MSNAds extends MSNAdCenter {
      * @param array $adIds Ad IDs
      * @return bool operation completed (TrackingID is in response header)
      */
-    public function resume($adGroupId, array $adIds) {
-        return $this->statusExec('ResumeAds', $adGroupId, $adIds, TRUE);
+    static public function resume($adGroupId, array $adIds) {
+        return self::statusExec('ResumeAds', $adGroupId, $adIds, TRUE);
     }
 
     /**
@@ -150,8 +150,8 @@ class MSNAds extends MSNAdCenter {
      * @param array $adIds Ad IDs
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByIds($adGroupId, array $adIds) {
-        return $this->statusExec('GetAdsByIds', $adGroupId, $adIds);
+    static public function getByIds($adGroupId, array $adIds) {
+        return self::statusExec('GetAdsByIds', $adGroupId, $adIds);
     }
 
     // -------------------------------------------------------------------------
@@ -162,11 +162,11 @@ class MSNAds extends MSNAdCenter {
      * @param <type> $editorialStatus
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByEditorialStatus($adGroupId, $editorialStatus) {
+    static public function getByEditorialStatus($adGroupId, $editorialStatus) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
         $params['EditorialStatus'] = $editorialStatus;
-        return $this->execRespond('GetAdsByEditorialStatus', $params);
+        return self::execRespond('GetAdsByEditorialStatus', $params);
     }
 
     // -- ADGROUPS
@@ -176,10 +176,10 @@ class MSNAds extends MSNAdCenter {
      * @param int $adGroupId Ad Group ID
      * @return mixed default response type (Object, Array or Raw XML)
      */
-    public function getByAdGroupId($adGroupId) {
+    static public function getByAdGroupId($adGroupId) {
         $params = array();
         $params['AdGroupId'] = $adGroupId;
-        return $this->execRespond('GetAdsByAdGroupId', $params);
+        return self::execRespond('GetAdsByAdGroupId', $params);
     }
 }
 ?>
