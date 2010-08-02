@@ -104,12 +104,12 @@ class MSNKeywords extends MSNAdCenter {
      * @param <type> $service
      * @param int $adGroupId Ad Group ID
      * @param array $keywordIds
-     * @param <type> $boolResponse
+     * @param bool $boolResponse
      * @return mixed default response type (Object, Array or Raw XML)
      */
     static private function statusExec($service, $adGroupId, array $keywordIds, $boolResponse = FALSE) {
         $params = array();
-        $params['CampaignId'] = $adGroupId;
+        $params['AdGroupId'] = $adGroupId;
         $params['KeywordIds'] = $keywordIds;
         if ($boolResponse) {
             return self::execute($service, $params);
