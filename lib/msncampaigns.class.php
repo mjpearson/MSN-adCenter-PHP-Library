@@ -35,8 +35,14 @@ class MSNCampaigns extends MSNAdCenter {
 
     const NAME = 'Campaigns';
 
-    static public $_objStruct = array('BroadMatchBid' => NULL,
-            'CashBackInfo' => NULL,
+    /* @var array request object helper */
+    static public $_objStruct = array(
+            'BudgetType' => NULL,
+            'CashBackInfo' => array(
+                'CashBackAmount' => NULL,
+                'CashBackStatus' => NULL,
+                'CashBackText' => NULL,
+            ),
             'ConversionTrackingEnabled' => NULL,
             'ConversionTrackingScript' => NULL,
             'DailyBudget' => NULL,
@@ -45,8 +51,8 @@ class MSNCampaigns extends MSNAdCenter {
             'Id' => NULL,
             'MonthlyBudget' => NULL,
             'Name' => NULL,
-            'NegativeCampaigns' => NULL,
-            'NegativeSiteUrls' => NULL,
+            'NegativeKeywords' => array(),
+            'NegativeSiteUrls' => array(),
             'Status' => NULL,
             'TimeZone' => NULL
     );
@@ -71,7 +77,7 @@ class MSNCampaigns extends MSNAdCenter {
     static private function structExec($service, $accountId, array $campaigns, $boolResponse = FALSE) {
         $params = array();
         $params['AccountId'] = $accountId;
-        $params['Campaigns'] = array('Keyword' => $campaigns);
+        $params['Campaigns'] = array('Campaign' => $campaigns);
         if ($boolResponse) {
             return self::execute($service, $params);
         } else {
@@ -168,7 +174,7 @@ class MSNCampaigns extends MSNAdCenter {
     static public function getByAccountId($accountId) {
         $params = array();
         $params['AccountId'] = $accountId;
-        return self::execRespond('GetCampaignsByAccountID', $params);
+        return self::execRespond('GetCampaignsByAccountId', $params);
     }
 
     /**

@@ -41,11 +41,13 @@ class MSNAdCenter {
 
     static protected $_headers = array();
 
-    static protected $_xmlns = "https://adcenter.microsoft.com/v6";
+    //static protected $_xmlns = "https://adcenter.microsoft.com/v6";
+    static protected $_xmlns = "http://adcenter.microsoft.com/syncapis";
+
 
     static protected $_opts = array(
             'trace' => TRUE,
-            'location' => MSDNAPI_SERVICE_URL,
+            'location' => MSDNAPI_SERVICE_URL
     );
 
     static protected $_client = NULL;
@@ -122,6 +124,10 @@ class MSNAdCenter {
         return self::$_client;
     }
 
+    static public function setClient($client) {
+        self::$_client = $client;
+    }
+
     static public function obj2Arr($obj) {
         if (!is_object($obj) && !is_array($obj)) {
             return $obj;
@@ -171,7 +177,6 @@ class MSNAdCenter {
 
         try {
             $output_headers = array();
-
             $request = array($action.'Request' => $params);
 
             $result = self::$_client->__soapCall(
@@ -181,6 +186,8 @@ class MSNAdCenter {
                     self::$_headers,
                     $output_headers);
 
+            $c = self::$_client;
+
             self::setResponse($result);
             self::setResponseHeaders($output_headers);
             return TRUE;
@@ -189,7 +196,6 @@ class MSNAdCenter {
         }
         return FALSE;
     }
-
 
     static public function execRespond($service, $params) {
         if (self::execute($service, $params)) {
@@ -276,6 +282,8 @@ class MSNAdCenter {
 
         // Display the fault code and the fault string.
         self::debug_print($e->faultcode." ".$e->faultstring);
+        self::debug_print(self::$_client->__getLastRequestHeaders());
+        self::debug_print(self::$_client->__getLastRequest());
     }
 
     /**
@@ -301,4 +309,160 @@ spl_autoload_extensions(implode(',',
         array('.class.php'))
 ));
 spl_autoload_register();
+
+// 'Target' data structure helpers
+// @link http://msdn.microsoft.com/en-US/library/aa982962%28v=MSADS.60%29.aspx
+
+class Targets  {
+    public $Age = array('Bids' => array());
+    public $Day = array('Bids' => array());
+    public $Gender = array('Bids' => array());
+    public $Hour = array('Bids' => array());
+    public $Id = NULL;
+    public $Location = array('Bids' => array());
+}
+
+abstract class TargetBid {
+
+    public $name = NULL;
+
+    // Bid helper
+    static public $incrementalBids = array(
+                                            'ZeroPercent',
+                                            'TenPercent',
+                                            'TwentyPercent',
+                                            'ThirtyPercent',
+                                            'FortyPercent',
+                                            'FiftyPercent',
+                                            'SixtyPercent',
+                                            'SeventyPercent',
+                                            'EightyPercent',
+                                            'NinetyPercent',
+                                            'OneHundredPercent',
+                                            'NegativeTenPercent',
+                                            'NegativeTwentyPercent',
+                                            'NegativeThirtyPercent',
+                                            'NegativeFortyPercent',
+                                            'NegativeFiftyPercent',
+                                            'NegativeSixtyPercent',
+                                            'NegativeSeventyPercent',
+                                            'NegativeEightyPercent',
+                                            'NegativeNinetyPercent',
+                                            'NegativeOneHundredPercent'
+                                        );
+
+    static public $enumFields = array();
+
+    protected $IncrementalBid = NULL;
+
+    public function __set($attribute, $value) {
+        // Perform some enumerated type checking
+        if ($attribute == 'IncrementalBid' && !in_array($value, self::$incrementalBids)) {
+            throw new RuntimeException($newBid.' not found in TargetBid::$incrementablBids');
+        } elseif (array_key_exists($attribute, self::$enumFields) && !in_array($attribute, self::$enumFields[$attribute])) {
+                throw new RuntimeException($value.' not found in '.get_class($this).'::$enumFields['.$attribute.']');
+        }
+
+        $this->$attribute = $value;
+    }
+
+    public function __get($attribute) {
+        return $this->$attribute;
+    }
+
+    public function getProperties() {
+        $reflect = new ReflectionClass($this);
+        return $reflect->getProperties(ReflectionProperty::IS_PROTECTED);
+    }
+
+}
+
+// @link http://msdn.microsoft.com/en-US/library/bb671720(v=MSADS.60).aspx
+class AgeTargetBid extends TargetBid {
+    public $name = 'Age';
+    protected $Age = NULL;
+    static public $enumFields = array('Age' => array(
+                                                    'EighteenToTwentyFive',
+                                                    'TwentyFiveToThirtyFive',
+                                                    'ThirtyFiveToFifty',
+                                                    'FiftyToSixtyFive',
+                                                    'SixtyFiveAndAbove'
+                                                ));
+}
+
+class BehaviouralTargetBid extends TargetBid {
+    public $name = 'Behavioural';
+    protected $BehavioralName = NULL;
+}
+
+class GenderTargetBid extends TargetBid {
+    public $name = 'Gender';
+    protected $Gender = NULL;
+    static public $enumFields = array('Gender' => array('Male', 'Female'));
+}
+
+class DayTargetBid extends TargetBid {
+    public $name = 'Day';
+    protected $Day = NULL;
+    static public $enumFields = array('Day' => array(
+                                                    'Sunday',
+                                                    'Monday',
+                                                    'Tuesday',
+                                                    'Wednesday',
+                                                    'Thursday',
+                                                    'Friday',
+                                                    'Saturday'
+                                                ));
+}
+
+class HourTargetBid extends TargetBid {
+    public $name = 'Hour';
+    protected $Hour = NULL;   
+    static public $enumFields = array('Hour' => array(
+                                                    'ThreeAMToSevenAM',
+                                                    'SevenAMToElevenAM',
+                                                    'ElevenAMToTwoPM',
+                                                    'TwoPMToSixPM',
+                                                    'SixPMToElevenPM',
+                                                    'ElevenPMToThreeAM'
+                                                ));
+}
+
+class LocationTargetBid extends TargetBid {
+    protected $BusinessTarget = NULL;
+    protected $CityTarget = NULL;
+    protected $CountryTarget = NULL;
+    protected $MetroAreaTarget = NULL;
+    protected $RadiusTarget = NULL;
+    protected $StateTarget = NULL;
+    protected $TargetAllLocations = FALSE;
+}
+
+// ----------- LocationTargetBid types
+class CityTargetBid extends TargetBid {
+    public $name = 'City';
+    protected $City = NULL;
+}
+
+class CountryTargetBid extends TargetBid {
+    public $name = 'Country';
+    protected $CountryAndRegion = NULL;
+}
+
+class StateTargetBid extends TargetBid {
+    public $name = 'State';
+    protected $State = NULL;
+}
+
+class MetroAreaTargetBid extends TargetBid {
+    public $name = 'MetroArea';
+    protected $MetroArea = NULL;
+}
+
+class RadiusTargetBid extends TargetBid {
+    public $name = 'RadiusTarget';
+    protected $LatitudeDegrees = NULL;
+    protected $LongitudeDegrees = NULL;
+    protected $Radius = NULL;
+}
 ?>
