@@ -60,6 +60,8 @@ class MSNAdCenter {
 
     static public $debug;
 
+    static public $lastError = array();
+
     /**
      * The MSN API contructor
      *
@@ -227,13 +229,14 @@ class MSNAdCenter {
                     // A single operation error has been returned.
                     $obj = $e->detail->ApiFaultDetail->OperationErrors;
                 }
+                
                 foreach ($obj as $operationError) {
                     self::debug_print("Operation error encountered:");
                     self::debug_print("Message: ".$operationError->Message);
                     self::debug_print("Details: ".$operationError->Details);
                     self::debug_print("ErrorCode: ".$operationError->ErrorCode);
                     self::debug_print("Code: ".$operationError->Code);
-                }
+                }                
             }
 
             // Process any batch errors.
@@ -296,8 +299,9 @@ class MSNAdCenter {
             $line_end = "\n";
             if (self::$debug['style'] == 'html')
                 $line_end = "<br>";
-            print "MSN API Debug: $string{$line_end}";
+            print "MSN API Debug: $string{$line_end}";            
         }
+        self::$lastError[] = $string;
     }
 }
 

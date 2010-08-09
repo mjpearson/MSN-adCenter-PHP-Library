@@ -35,18 +35,32 @@ class MSNKeywords extends MSNAdCenter {
 
     const NAME = 'Keywords';
 
-    static public $_objStruct = array('BroadMatchBid' => NULL,
-            'CashBackInfo' => NULL,
-            'ContentMatchBid' => NULL,
-            'EditorialStatus' => NULL,
-            'ExactMatchBid' => NULL,
+    // Keywords use a different namespace
+    static protected $_xmlns = 'https://adcenter.microsoft.com/v6';
+
+    static public $_objStruct = array(
+        
+            'CashBackInfo' => array(
+                'CashBackAmount' => NULL,
+                'CashBackStatus' => NULL,
+                'CashBackText' => NULL,
+            ),
+        
+            'BroadMatchBid' => array('Amount' => 0),
+            'ContentMatchBid' => array('Amount' => 0),
+            'ExactMatchBid' => array('Amount' => 0),
+            'PhraseMatchBid' => array('Amount' => 0),
+        
             'Id' => NULL,
-            'NegativeKeywords' => NULL,
+
+            // Unlike other service requests, EditorialStatus breaks the service
+            // when sent, even if it's null.  Quirk.
+            //'EditorialStatus' => NULL,
+            'NegativeKeywords' => array(),
             'OverridePriority' => NULL,
             'Param1' => NULL,
             'Param2' => NULL,
             'Param3' => NULL,
-            'PhraseMatchBid' => NULL,
             'Status' => NULL,
             'Text' => NULL
     );

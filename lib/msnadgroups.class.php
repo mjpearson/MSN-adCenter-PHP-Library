@@ -38,10 +38,10 @@ class MSNAdGroups extends MSNAdCenter {
     static private $_objStruct = array(
         'AdDistribution' => NULL,
         'BiddingModel' => NULL,
-        'BroadMatchBid' => NULL,
-        'ContentMatchBid' => NULL,
-        'ExactMatchBid' => NULL,
-        'PhraseMatchBid' => NULL,
+        'BroadMatchBid' => array('Amount' => 0),
+        'ContentMatchBid' => array('Amount' => 0),
+        'ExactMatchBid' => array('Amount' => 0),
+        'PhraseMatchBid' => array('Amount' => 0),
         'CashBackInfo' => array(
                 'CashBackAmount' => NULL,
                 'CashBackStatus' => NULL,
