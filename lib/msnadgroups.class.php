@@ -35,22 +35,35 @@ class MSNAdGroups extends MSNAdCenter {
 
     const NAME = 'AdGroups';
 
-    static private $_objStruct = array('AdDistribution' => NULL,
-            'BiddingModel' => NULL,
-            'BroadMatchBid' => NULL,
-            'CashBackInfo' => NULL,
-            'ContentMatchBid' => NULL,
-            'EndDate' => NULL,
-            'ExactMatchBid' => NULL,
-            'Id' => NULL,
-            'LanguageAndRegion' => NULL,
-            'Name' => NULL,
-            'NegativeKeywords' => NULL,
-            'NegativeSiteUrls' => NULL,
-            'PhraseMatchBid' => NULL,
-            'PricingModel' => NULL,
-            'StartDate' => NULL,
-            'Status'  => NULL
+    static private $_objStruct = array(
+        'AdDistribution' => NULL,
+        'BiddingModel' => NULL,
+        'BroadMatchBid' => NULL,
+        'ContentMatchBid' => NULL,
+        'ExactMatchBid' => NULL,
+        'PhraseMatchBid' => NULL,
+        'CashBackInfo' => array(
+                'CashBackAmount' => NULL,
+                'CashBackStatus' => NULL,
+                'CashBackText' => NULL,
+            ),        
+        'EndDate' => array(
+                'Day' => '',
+                'Month' => '',
+                'Year' => ''
+            ),
+        'StartDate' => array(
+                'Day' => '',
+                'Month' => '',
+                'Year' => ''
+            ),        
+        'Id' => NULL,
+        'LanguageAndRegion' => NULL,
+        'Name' => NULL,
+        'NegativeKeywords' => array(),
+        'NegativeSiteUrls' => array(),        
+        'PricingModel' => NULL,        
+        'Status'  => NULL
     );
 
     /**

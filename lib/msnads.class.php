@@ -34,12 +34,31 @@
 class MSNAds extends MSNAdCenter {
     const NAME = 'Ads';
 
+    // Ads use a different namespace
+    static protected $_xmlns = 'https://adcenter.microsoft.com/v6';
+
     // Ad Structure helper
     static private $_objStruct = array(
-            'Title' => NULL,
-            'DestinationUrl' => NULL,
-            'DisplayUrl' => NULL,
-            'Text' => NULL
+        'EditorialStatus' => NULL,
+        'Id' => NULL,
+        'Status' => NULL,
+        'Type' => NULL
+    );
+
+    static private $_objStructText = array(
+        'Title' => NULL,
+        'DestinationUrl' => NULL,
+        'DisplayUrl' => NULL,
+        'Text' => NULL
+    );
+
+    static private $_objStructMobile = array(        
+        'DestinationUrl' => NULL,
+        'DisplayUrl' => NULL,
+        'Title' => NULL,
+        'Text' => NULL,
+        'BusinessName' => NULL,
+        'PhoneNumber' => NULL        
     );
 
     /**
@@ -48,6 +67,22 @@ class MSNAds extends MSNAdCenter {
      */
     static public function getObjStruct() {
         return self::$_objStruct;
+    }
+
+    /**
+     * Gets an Ad object by child type
+     * @param string $type 'Text', 'Image' or 'Mobile' ad type
+     * @return array derived structure
+     */
+    static public function getObjStructByType($type = 'Text') {
+        $a = array();
+        if ($type == 'Text' || $type == 'Image') {
+            $a = self::$_objStructText;
+        } elseif ($type == 'Mobile') {
+            $a = self::$_objStructMobile;
+        }
+        $a['Type'] = $type;
+        return $a;
     }
 
     /**
@@ -60,14 +95,17 @@ class MSNAds extends MSNAdCenter {
      * @return mixed default response type (Object, Array or Raw XML), or bool if $boolResponse == TRUE
      */
     static private function structExec($service, $adGroupId, array $ads, $boolResponse = FALSE) {
-        $params = array();
-        $params['AdGroupId'] = $adGroupId;
         $adSVar = array();
+        
         foreach ($ads as $adStruct) {
-
-            $adSVar[] = new SoapVar($adStruct, SOAP_ENC_OBJECT, 'TextAd', self::$_xmlns);
+            $adSVar[] = new SoapVar($adStruct, SOAP_ENC_OBJECT, ($adStruct['Type'] == 'Mobile') ? 'MobileAd' : 'TextAd', self::$_xmlns);
         }
-        $params['Ads'] = array('Ad' => $adSVar);
+
+        $params=array(
+                    'AdGroupId' => $adGroupId,
+                    'Ads' => array('Ad' => $adSVar)
+                );
+
         if ($boolResponse) {
             return self::execute($service, $params);
         } else {
